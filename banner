@@ -1,0 +1,56 @@
+if [ -d "BUILD_VOLUME/aosp13/build" ] ; then
+   cd BUILD_VOLUME/aosp13
+   . ./build/envsetup.sh
+cat <<EOT
+
+   Your environment is set up to build an AOSP image.  You'll need to specify a
+   build target using the 'lunch' command.  The following targets are expected
+   to work in this container and should be a good starting point for your
+   project:
+
+|------------------------|----------------------|-----------------------------|
+| Machine                | Lunch Target         | Emulator                    |
+|------------------------|----------------------|-----------------------------|
+| AOSP Phonse on x86_64  | sdk_phone_x86_64     | Goldfish (QEMU backend)     |
+| basic emulator         |                      |                             |
+|------------------------|----------------------|-----------------------------|
+| AOSP Phone on x86_64   | aosp_cf_x86_64_phone | Cuttlefish (QEMU or CrosVM) |
+| advanced emulator      |                      |                             |
+|------------------------|----------------------|-----------------------------|
+| AOSP Automotive (AAOS) | aosp_cf_x86_auto     | Cuttlefish (QEMU or CrosVM) |
+| x86 advanced emulator  |                      |                             |
+|------------------------|----------------------|-----------------------------|
+| AOSP on aarch64 QEMU   | fvp                  | Stock QEMU / ARM FVP        |
+| with graphics          |                      |                             |
+|------------------------|----------------------|-----------------------------|
+| AOSP on aarch64 QEMU   | fvp_mini             | Stock QEMU / ARM FVP        |
+| without graphics       |                      |                             |
+|------------------------|----------------------|-----------------------------|
+
+   For example, to build a Goldfish Emulator image:
+
+      $ lunch sdk_phone_x86_64
+
+EOT
+else
+cat <<EOT
+
+   Unable to locate an AOSP source tree in the expected location:
+
+      BUILD_VOLUME/aosp13
+
+   You may have started the container without a volume mapping for your Android
+   source tree.  If so, you should restart the container including the following
+   options on your 'docker run' command line or add an appropriate volume mapping
+   entry to your Docker compose file:
+
+      --mount type=bind,src=<path_to_aosp>,target=BUILD_VOLUME/aosp13
+
+   If you have placed your source tree at a different location, you may access
+   it from there and set up your build environment by sourcing the
+   build/envsetup.sh script located in your aosp13 source tree.
+
+EOT
+fi
+
+# vi:ft=sh
